@@ -1,0 +1,33 @@
+GAL16V8
+addr
+
+; F11, F12, F13 are CPU flag outputs
+A9 A10 A11 A12 A13 A14 A15 F11 F12 GND
+F13 JC15 JC14  PALIRQ  BPS  RAMA16  CSROM CSRAM CSUART VCC
+
+; UART is at $FE00 to $FFFF
+/CSUART = A15 * A14 * A13 * A12 * A11 * A10 * A9
+
+; (Old definition of RAM) RAM is at $0200 to $02FF
+;/CSRAM = /A15 * /A14 * /A13 * /A12 * /A11 * /A10 * A9
+
+; RAM is at $0200 to $FDFF, unless F11 is set, in which
+; case it is from $0000 to $FDFF.
+CSRAM = /A15 * /A14 * /A13 * /A12 * /A11 * /A10 * /A9 * /F11 +
+        A15 * A14 * A13 * A12 * A11 * A10 * A9
+
+; ROM is at $0000 to $01FF, unless F11 is set, in which
+; case there is no more ROM!
+/CSROM = /A15 * /A14 * /A13 * /A12 * /A11 * /A10 * /A9 * /F11
+
+; BPS is controlled by F12 (JC13 mirrors F12 state by external wiring)
+BPS = F12
+
+; Future use
+PALIRQ = VCC
+RAMA16 = GND
+JC14.T = GND
+JC14.E = GND
+JC15.T = GND
+JC15.E = GND
+; .E is the tristate enable
